@@ -10,11 +10,17 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <QApplication>
 #include <QDebug>
+#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include "mycanvas.h"
+#include "movecommand.h"
 
 DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     : QGraphicsProxyWidget(parent), mediaObject(new QMediaPlayer(this)),
-      audioFile(new QTemporaryFile(this)), duration(0)
+      audioFile(new QTemporaryFile(this)), duration(0),
+      rightButtonDown(false), rightDragStarted(false)
 {
     QWidget *panel = new QWidget;
     panel->setFixedSize(700, 100);
@@ -124,6 +130,57 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
         qWarning() << "Unable to open the Dinastya audio resource or temporary file:"
                    << resource.errorString() << audioFile->errorString();
     }
+}
+
+void DinastyaPlayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton) {
+        rightButtonDown = true;
+        rightDragStarted = false;
+        rightDragStartPos = pos();
+        rightDragOffset = event->scenePos() - pos();
+        setSelected(true);
+        event->accept();
+        return;
+    }
+    QGraphicsProxyWidget::mousePressEvent(event);
+}
+
+void DinastyaPlayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (rightButtonDown && (event->buttons() & Qt::RightButton)) {
+        if (!rightDragStarted &&
+                QLineF(event->scenePos(), event->buttonDownScenePos(Qt::RightButton)).length()
+                >= QApplication::startDragDistance())
+            rightDragStarted = true;
+        if (rightDragStarted)
+            setPos(event->scenePos() - rightDragOffset);
+        event->accept();
+        return;
+    }
+    QGraphicsProxyWidget::mouseMoveEvent(event);
+}
+
+void DinastyaPlayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton && rightButtonDown) {
+        rightButtonDown = false;
+        if (rightDragStarted && scene()) {
+            myCanvas *canvas = static_cast<myCanvas*>(scene());
+            canvas->recordPlayerMove(this, rightDragStartPos, pos());
+        } else if (!rightDragStarted) {
+            QMenu menu;
+            QAction *deleteAction = menu.addAction(tr("Удалить плеер"));
+            if (menu.exec(event->screenPos()) == deleteAction && scene()) {
+                myCanvas *canvas = static_cast<myCanvas*>(scene());
+                canvas->deletePlayer(this);
+            }
+        }
+        rightDragStarted = false;
+        event->accept();
+        return;
+    }
+    QGraphicsProxyWidget::mouseReleaseEvent(event);
 }
 
 void DinastyaPlayer::stopPlayback()

@@ -25,8 +25,8 @@
 #include "dinastyaplayer.h"
 
 deleteCommand::deleteCommand(myCanvas *s, QList<QGraphicsItem*> list)
+    : scene(s), isOnScene(true)
 {
-    scene = s;
     foreach ( QGraphicsItem *i, list) {
         if ( scene->isDevice(i) ) {
             device *dev = qgraphicsitem_cast<device*>(i);

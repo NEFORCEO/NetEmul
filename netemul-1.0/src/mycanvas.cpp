@@ -39,6 +39,7 @@
 #include "scenexmlwriter.h"
 #include "scenexmlreader.h"
 #include "dinastyaplayer.h"
+#include "movecommand.h"
 
 /*!
   Конструктор проводит начальную инициализацию сцены.
@@ -458,6 +459,26 @@ void myCanvas::unregisterPlayer(DinastyaPlayer *player)
 {
     removeItem(player);
     myPlayers.removeOne(player);
+}
+
+void myCanvas::deletePlayer(DinastyaPlayer *player)
+{
+    if (!player || !myPlayers.contains(player))
+        return;
+    myModified = true;
+    commandStack.push(new deleteCommand(this, QList<QGraphicsItem*>() << player));
+}
+
+void myCanvas::recordPlayerMove(DinastyaPlayer *player, const QPointF &from, const QPointF &to)
+{
+    if (!player || from == to)
+        return;
+    QMap<QGraphicsItem*, QPointF> oldPositions;
+    QMap<QGraphicsItem*, QPointF> newPositions;
+    oldPositions.insert(player, from);
+    newPositions.insert(player, to);
+    myModified = true;
+    commandStack.push(new moveCommand(this, oldPositions, newPositions));
 }
 //--------------------------------------------------------------------
 /*!

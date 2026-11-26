@@ -90,6 +90,8 @@ public:
     void registerPlayer(DinastyaPlayer *player);
     void unregisterPlayer(DinastyaPlayer *player);
     DinastyaPlayer* createDinastyaPlayer(QPointF point);
+    void deletePlayer(DinastyaPlayer *player);
+    void recordPlayerMove(DinastyaPlayer *player, const QPointF &from, const QPointF &to);
     QList<DinastyaPlayer*> players() const { return myPlayers; }
     void putItems(QMap<QGraphicsItem*,QPointF> map);
     void calibrateAll(QList<QGraphicsItem*> list);

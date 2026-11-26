@@ -4,6 +4,7 @@
 #include <QGraphicsProxyWidget>
 
 class QMediaPlayer;
+class QGraphicsSceneMouseEvent;
 
 class QLabel;
 class QPushButton;
@@ -18,6 +19,11 @@ public:
     explicit DinastyaPlayer(QGraphicsItem *parent = 0);
     int type() const { return Type; }
     void stopPlayback();
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
     void togglePlayback();
@@ -41,6 +47,10 @@ private:
     QLabel *positionLabel;
     QLabel *durationLabel;
     qint64 duration;
+    QPointF rightDragOffset;
+    QPointF rightDragStartPos;
+    bool rightButtonDown;
+    bool rightDragStarted;
 };
 
 #endif // DINASTYAPLAYER_H
