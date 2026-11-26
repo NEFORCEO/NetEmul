@@ -3,12 +3,14 @@
 #include <QtMultimedia/QMediaContent>
 #include <QtMultimedia/QMediaPlayer>
 #include <QFile>
+#include <QDir>
 #include <QTemporaryFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <QDebug>
 
 DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     : QGraphicsProxyWidget(parent), mediaObject(new QMediaPlayer(this)),
@@ -66,6 +68,8 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     connect(mediaObject, SIGNAL(durationChanged(qint64)), this, SLOT(updateDuration(qint64)));
     connect(mediaObject, SIGNAL(stateChanged(QMediaPlayer::State)),
             this, SLOT(updatePlaybackState()));
+    connect(mediaObject, SIGNAL(error(QMediaPlayer::Error)),
+            this, SLOT(handleMediaError()));
 
     QHBoxLayout *progressLayout = new QHBoxLayout;
     progressLayout->setSpacing(10);
@@ -102,14 +106,23 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     layout->addLayout(volumeLayout, 0);
 
     QFile resource(":/im/audio-dinastiya.mp3");
+    audioFile->setFileTemplate(QDir::tempPath() + "/netemul-dinastya-XXXXXX.mp3");
     if (resource.open(QIODevice::ReadOnly) && audioFile->open()) {
-        audioFile->write(resource.readAll());
-        audioFile->flush();
-        audioFile->close();
-        mediaObject->setMedia(QMediaContent(QUrl::fromLocalFile(audioFile->fileName())));
+        const QByteArray audioData = resource.readAll();
+        if (audioFile->write(audioData) == audioData.size() && audioFile->flush()) {
+            const QString audioPath = audioFile->fileName();
+            audioFile->close();
+            mediaObject->setMedia(QMediaContent(QUrl::fromLocalFile(audioPath)));
+        } else {
+            playButton->setEnabled(false);
+            playButton->setToolTip(tr("Unable to prepare the audio file"));
+            qWarning() << "Unable to write the Dinastya audio resource:" << audioFile->errorString();
+        }
     } else {
         playButton->setEnabled(false);
         playButton->setToolTip(tr("Audio file is unavailable"));
+        qWarning() << "Unable to open the Dinastya audio resource or temporary file:"
+                   << resource.errorString() << audioFile->errorString();
     }
 }
 
@@ -155,6 +168,14 @@ void DinastyaPlayer::updatePlaybackState()
     const bool playing = mediaObject->state() == QMediaPlayer::PlayingState;
     playButton->setText(playing ? QString::fromUtf8("Ⅱ") : QString::fromUtf8("▶"));
     playButton->setToolTip(playing ? tr("Pause") : tr("Play"));
+}
+
+void DinastyaPlayer::handleMediaError()
+{
+    const QString error = mediaObject->errorString();
+    playButton->setEnabled(false);
+    playButton->setToolTip(error.isEmpty() ? tr("Unable to play audio") : error);
+    qWarning() << "Dinastya audio playback failed:" << error;
 }
 
 void DinastyaPlayer::toggleMute()

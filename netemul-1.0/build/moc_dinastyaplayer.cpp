@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_DinastyaPlayer_t {
-    QByteArrayData data[12];
-    char stringdata0[132];
+    QByteArrayData data[13];
+    char stringdata0[149];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,15 +41,17 @@ QT_MOC_LITERAL(5, 45, 14), // "updatePosition"
 QT_MOC_LITERAL(6, 60, 14), // "updateDuration"
 QT_MOC_LITERAL(7, 75, 8), // "duration"
 QT_MOC_LITERAL(8, 84, 19), // "updatePlaybackState"
-QT_MOC_LITERAL(9, 104, 10), // "toggleMute"
-QT_MOC_LITERAL(10, 115, 9), // "setVolume"
-QT_MOC_LITERAL(11, 125, 6) // "volume"
+QT_MOC_LITERAL(9, 104, 16), // "handleMediaError"
+QT_MOC_LITERAL(10, 121, 10), // "toggleMute"
+QT_MOC_LITERAL(11, 132, 9), // "setVolume"
+QT_MOC_LITERAL(12, 142, 6) // "volume"
 
     },
     "DinastyaPlayer\0togglePlayback\0\0seek\0"
     "position\0updatePosition\0updateDuration\0"
-    "duration\0updatePlaybackState\0toggleMute\0"
-    "setVolume\0volume"
+    "duration\0updatePlaybackState\0"
+    "handleMediaError\0toggleMute\0setVolume\0"
+    "volume"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,7 +61,7 @@ static const uint qt_meta_data_DinastyaPlayer[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,13 +69,14 @@ static const uint qt_meta_data_DinastyaPlayer[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   49,    2, 0x08 /* Private */,
-       3,    1,   50,    2, 0x08 /* Private */,
-       5,    1,   53,    2, 0x08 /* Private */,
-       6,    1,   56,    2, 0x08 /* Private */,
-       8,    0,   59,    2, 0x08 /* Private */,
-       9,    0,   60,    2, 0x08 /* Private */,
-      10,    1,   61,    2, 0x08 /* Private */,
+       1,    0,   54,    2, 0x08 /* Private */,
+       3,    1,   55,    2, 0x08 /* Private */,
+       5,    1,   58,    2, 0x08 /* Private */,
+       6,    1,   61,    2, 0x08 /* Private */,
+       8,    0,   64,    2, 0x08 /* Private */,
+       9,    0,   65,    2, 0x08 /* Private */,
+      10,    0,   66,    2, 0x08 /* Private */,
+      11,    1,   67,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -82,7 +85,8 @@ static const uint qt_meta_data_DinastyaPlayer[] = {
     QMetaType::Void, QMetaType::LongLong,    7,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   11,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   12,
 
        0        // eod
 };
@@ -98,8 +102,9 @@ void DinastyaPlayer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 2: _t->updatePosition((*reinterpret_cast< qint64(*)>(_a[1]))); break;
         case 3: _t->updateDuration((*reinterpret_cast< qint64(*)>(_a[1]))); break;
         case 4: _t->updatePlaybackState(); break;
-        case 5: _t->toggleMute(); break;
-        case 6: _t->setVolume((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->handleMediaError(); break;
+        case 6: _t->toggleMute(); break;
+        case 7: _t->setVolume((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -134,13 +139,13 @@ int DinastyaPlayer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

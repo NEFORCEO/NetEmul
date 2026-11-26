@@ -25,6 +25,7 @@ private slots:
     void updatePosition(qint64 position);
     void updateDuration(qint64 duration);
     void updatePlaybackState();
+    void handleMediaError();
     void toggleMute();
     void setVolume(int volume);
 
