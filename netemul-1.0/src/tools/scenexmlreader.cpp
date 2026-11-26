@@ -58,6 +58,12 @@ void sceneXmlReader::readNetemul()
             p.setY( attributes().value("y").toString().toDouble() );
             myScene->createTextItem( p , readElementText() );
         }
+        else if (name() == "dinastyaplayer") {
+            QPointF p(attributes().value("x").toString().toDouble(),
+                      attributes().value("y").toString().toDouble());
+            myScene->createDinastyaPlayer(p);
+            readNext();
+        }
     }
 }
 
