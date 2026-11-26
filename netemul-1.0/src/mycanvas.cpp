@@ -65,6 +65,7 @@ myCanvas::~myCanvas()
     myConnections.clear();
     myTextItems.clear();
     myPlayers.clear();
+    myState->goEmpty();
 }
 //------------------------------------------------------------------
 /*!
