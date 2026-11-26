@@ -24,6 +24,10 @@
 
 ![Передача пакетов в NetEmul](screenshots/netemul-data-transfer.png)
 
+Схема сети с работающим плеером:
+
+![Схема сети и плеер «Династия»](screenshots/netemul-network-with-player.jpg)
+
 Обложка встроенного плеера:
 
 ![Обложка плеера «Династия»](netemul-1.0/cover-dinastiya.jpg)
