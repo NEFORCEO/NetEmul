@@ -59,6 +59,7 @@ jobs:
       - name: Build and package macOS app
         working-directory: netemul-1.0
         run: |
+          rm -rf build
           qmake netemul.pro CONFIG+=release
           make -j"$(sysctl -n hw.ncpu)"
           macdeployqt netemul.app -dmg
@@ -93,6 +94,7 @@ jobs:
         working-directory: netemul-1.0
         run: |
           $ErrorActionPreference = 'Stop'
+          if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }
           qmake netemul.pro 'CONFIG+=release'
           mingw32-make -j $env:NUMBER_OF_PROCESSORS
           if (!(Test-Path 'release/netemul.exe')) {
