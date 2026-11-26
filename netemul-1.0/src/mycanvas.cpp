@@ -60,12 +60,12 @@ myCanvas::myCanvas(QMenu *context, QObject *parent) : QGraphicsScene(parent)
 */ 
 myCanvas::~myCanvas()
 {
+    myState->goEmpty();
     clear();
     myDevices.clear();
     myConnections.clear();
     myTextItems.clear();
     myPlayers.clear();
-    myState->goEmpty();
 }
 //------------------------------------------------------------------
 /*!
@@ -568,7 +568,8 @@ void myCanvas::putItems(QMap<QGraphicsItem*,QPointF> map)
 void myCanvas::calibrateAll(QList<QGraphicsItem*> list)
 {
     foreach ( QGraphicsItem *i , list )
-        if ( i->type() != textItem::Type ) i->setPos( calibrate( i->pos() ) );
+        if ( i->type() != textItem::Type && i->type() != DinastyaPlayer::Type )
+            i->setPos( calibrate( i->pos() ) );
 }
 
 void myCanvas::registerDevice(device *dev)
