@@ -102,7 +102,8 @@ jobs:
           if (!(Test-Path 'release/netemul.exe')) {
             throw 'Expected release/netemul.exe was not produced.'
           }
-          & "$env:QT_ROOT_DIR/bin/windeployqt.exe" --release --compiler-runtime --multimedia --verbose 2 --dir release --plugindir release 'release/netemul.exe'
+          $windeployqt = (Get-Command 'windeployqt.exe' -ErrorAction Stop).Source
+          & $windeployqt --release --compiler-runtime --multimedia --verbose 2 --dir release --plugindir release 'release/netemul.exe'
           if ($LASTEXITCODE -ne 0) {
             throw "windeployqt failed with exit code $LASTEXITCODE."
           }
