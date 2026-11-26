@@ -5,6 +5,9 @@
 #define AppName "NetEmul"
 #define AppPublisher "NetEmul"
 #define AppExeName "netemul.exe"
+#ifndef ReleaseDir
+  #define ReleaseDir AddBackslash(SourcePath) + "..\release"
+#endif
 
 [Setup]
 AppId={{BB2CF0A1-710E-4C3F-A2DE-6AD12EEDC97A}
@@ -23,7 +26,7 @@ ArchitecturesInstallIn64BitMode=x64
 PrivilegesRequired=lowest
 
 [Files]
-Source: "..\release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\NetEmul"; Filename: "{app}\{#AppExeName}"

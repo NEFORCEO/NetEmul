@@ -54,7 +54,8 @@ jobs:
           host: mac
           target: desktop
           arch: clang_64
-          modules: qtscript qtsvg
+          modules: qtscript
+          archives: qtbase qtmultimedia qtsvg
           cache: true
       - name: Build and package macOS app
         working-directory: netemul-1.0
@@ -86,7 +87,8 @@ jobs:
           host: windows
           target: desktop
           arch: win64_mingw81
-          modules: qtscript qtsvg
+          modules: qtscript
+          archives: qtbase qtmultimedia qtsvg
           tools: 'tools_mingw,qt.tools.win64_mingw810'
           cache: true
       - name: Build and package Windows app
@@ -100,11 +102,67 @@ jobs:
           if (!(Test-Path 'release/netemul.exe')) {
             throw 'Expected release/netemul.exe was not produced.'
           }
-          windeployqt --release --compiler-runtime --multimedia release/netemul.exe
+          & "$env:QT_ROOT_DIR/bin/windeployqt.exe" --release --compiler-runtime --multimedia --verbose 2 --dir release --plugindir release 'release/netemul.exe'
+          if ($LASTEXITCODE -ne 0) {
+            throw "windeployqt failed with exit code $LASTEXITCODE."
+          }
+
+          $qtRuntimeDlls = @(
+            'Qt5Core.dll', 'Qt5Gui.dll', 'Qt5Widgets.dll', 'Qt5Network.dll',
+            'Qt5Multimedia.dll', 'Qt5OpenGL.dll', 'Qt5PrintSupport.dll',
+            'Qt5Script.dll', 'Qt5Svg.dll'
+          )
+          foreach ($dll in $qtRuntimeDlls) {
+            $sourceDll = Join-Path $env:QT_ROOT_DIR "bin/$dll"
+            if (!(Test-Path $sourceDll)) {
+              throw "Qt runtime DLL is missing from the SDK: $sourceDll"
+            }
+            Copy-Item $sourceDll 'release/' -Force
+          }
+
+          $mingwBin = Join-Path $env:IQTA_TOOLS 'mingw810_64/bin'
+          foreach ($dll in @('libgcc_s_seh-1.dll', 'libstdc++-6.dll', 'libwinpthread-1.dll')) {
+            $sourceDll = Join-Path $mingwBin $dll
+            if (!(Test-Path $sourceDll)) {
+              throw "MinGW runtime DLL is missing: $sourceDll"
+            }
+            Copy-Item $sourceDll 'release/' -Force
+          }
+
+          $platformPlugin = Join-Path $env:QT_ROOT_DIR 'plugins/platforms/qwindows.dll'
+          if (!(Test-Path $platformPlugin)) {
+            throw "Qt Windows platform plugin is missing: $platformPlugin"
+          }
+          New-Item -ItemType Directory -Force -Path 'release/platforms' | Out-Null
+          Copy-Item $platformPlugin 'release/platforms/qwindows.dll' -Force
+
+          $requiredFiles = @(
+            'Qt5Core.dll', 'Qt5Gui.dll', 'Qt5Widgets.dll', 'Qt5Network.dll',
+            'Qt5Multimedia.dll', 'Qt5OpenGL.dll', 'Qt5PrintSupport.dll',
+            'Qt5Script.dll', 'Qt5Svg.dll', 'platforms/qwindows.dll',
+            'libgcc_s_seh-1.dll', 'libstdc++-6.dll', 'libwinpthread-1.dll'
+          )
+          foreach ($file in $requiredFiles) {
+            if (!(Test-Path (Join-Path 'release' $file))) {
+              throw "Qt deployment is incomplete: release/$file is missing."
+            }
+          }
+
+          $appProcess = Start-Process -FilePath (Resolve-Path 'release/netemul.exe') -WorkingDirectory (Resolve-Path 'release') -PassThru
+          Start-Sleep -Seconds 8
+          if ($appProcess.HasExited) {
+            throw "NetEmul failed to start (exit code $($appProcess.ExitCode))."
+          }
+          Stop-Process -Id $appProcess.Id -Force
+
           Copy-Item -Recurse translation release/translation
           Copy-Item -Recurse scripts release/scripts
           Copy-Item -Recurse doc release/doc
-          iscc.exe /Q "/DAppVersion=${{ needs.version.outputs.version }}" windows\netemul.iss
+          $releaseDir = (Resolve-Path 'release').Path
+          & iscc.exe /Q "/DAppVersion=${{ needs.version.outputs.version }}" "/DReleaseDir=$releaseDir" windows\netemul.iss
+          if ($LASTEXITCODE -ne 0) {
+            throw "Inno Setup failed with exit code $LASTEXITCODE."
+          }
           if (!(Test-Path 'windows/NetEmul-Setup.exe')) {
             throw 'Expected windows/NetEmul-Setup.exe installer was not produced.'
           }

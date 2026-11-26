@@ -182,7 +182,6 @@ void MainWindow::retranslate()
     UPDATEACTION( printAct , tr("Print...") , tr("Print user's network") )
     UPDATEACTION( printPreviewAct , tr("Preview...") , tr("Preview network berfore printing") );
     UPDATEACTION( exportSceneAct , tr("Export image...") , tr("Export network diagram as PNG or SVG") );
-    UPDATEACTION( exportSceneAct , tr("Export image...") , tr("Export network diagram as PNG or SVG") );
     UPDATEACTION( virtualNetworkAct , tr("Configure VLAN...") , tr("Configure VLAN") );
     UPDATEACTION( noteAct , tr("Set description...") , tr("Set description of device") );
     UPDATEACTION( cableLabelAct , tr("Show labels") , tr("Show labels on cables") );
@@ -332,9 +331,6 @@ void MainWindow::createAction()
     exportSceneAct = createOneAction();
     connect( exportSceneAct , SIGNAL(triggered()) , SLOT(exportScene()) );
 
-    exportSceneAct = createOneAction();
-    connect( exportSceneAct , SIGNAL(triggered()) , SLOT(exportScene()) );
-
     virtualNetworkAct = createOneAction();
 
     noteAct = createOneAction(QIcon(":/im/images/description.png") );
@@ -357,7 +353,6 @@ void MainWindow::createMenu()
     fileMenu->addSeparator();
     fileMenu->addAction(printAct);
     fileMenu->addAction(printPreviewAct);
-    fileMenu->addAction(exportSceneAct);
     fileMenu->addAction(exportSceneAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -765,56 +760,6 @@ void MainWindow::printPreviewDialog()
     QPrintPreviewDialog dialog(printer,this);
     connect( &dialog , SIGNAL(paintRequested(QPrinter*)) , SLOT(paintInPreviewDialog(QPrinter*)));
     dialog.exec();
-}
-
-void MainWindow::exportScene()
-{
-    const QString fileName = QFileDialog::getSaveFileName(
-                this, tr("Export network diagram"), QString(),
-                tr("PNG image (*.png);;SVG image (*.svg)"));
-    if (fileName.isEmpty())
-        return;
-
-    const QRectF bounds = canva->itemsBoundingRect();
-    if (bounds.isEmpty()) {
-        QMessageBox::warning(this, tr("Export network diagram"),
-                             tr("There is nothing to export."));
-        return;
-    }
-
-    const QRectF exportBounds = bounds.adjusted(-20, -20, 20, 20);
-    QString outputPath = fileName;
-    QString suffix = QFileInfo(outputPath).suffix().toLower();
-    if (suffix != "svg") {
-        if (suffix != "png")
-            outputPath += ".png";
-        suffix = "png";
-    }
-
-    bool success = false;
-    if (suffix == "svg") {
-        QSvgGenerator generator;
-        generator.setFileName(outputPath);
-        generator.setSize(exportBounds.size().toSize());
-        generator.setViewBox(exportBounds);
-        generator.setTitle(tr("NetEmul network diagram"));
-        QPainter painter;
-        if (painter.begin(&generator)) {
-            canva->render(&painter, QRectF(QPointF(0, 0), exportBounds.size()), exportBounds);
-            success = painter.end();
-        }
-    } else {
-        QImage image(exportBounds.size().toSize(), QImage::Format_ARGB32_Premultiplied);
-        image.fill(Qt::white);
-        QPainter painter(&image);
-        canva->render(&painter, QRectF(QPointF(0, 0), exportBounds.size()), exportBounds);
-        painter.end();
-        success = image.save(outputPath, "PNG");
-    }
-
-    if (!success)
-        QMessageBox::warning(this, tr("Export network diagram"),
-                             tr("Could not save the image file."));
 }
 
 void MainWindow::exportScene()
