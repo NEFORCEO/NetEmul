@@ -401,6 +401,34 @@
         <translation>Предпросмотр сети перед печатью</translation>
     </message>
     <message>
+        <source>Export image...</source>
+        <translation>Экспорт изображения...</translation>
+    </message>
+    <message>
+        <source>Export network diagram as PNG or SVG</source>
+        <translation>Экспортировать схему сети в PNG или SVG</translation>
+    </message>
+    <message>
+        <source>Export network diagram</source>
+        <translation>Экспорт схемы сети</translation>
+    </message>
+    <message>
+        <source>PNG image (*.png);;SVG image (*.svg)</source>
+        <translation>Изображение PNG (*.png);;Изображение SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>There is nothing to export.</source>
+        <translation>На схеме нечего экспортировать.</translation>
+    </message>
+    <message>
+        <source>NetEmul network diagram</source>
+        <translation>Схема сети NetEmul</translation>
+    </message>
+    <message>
+        <source>Could not save the image file.</source>
+        <translation>Не удалось сохранить файл изображения.</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Configure VLAN...</source>
         <translation>Настройка VLAN...</translation>

@@ -348,6 +348,34 @@
         <translation>Previsualizar la red antes de imprimir</translation>
     </message>
     <message>
+        <source>Export image...</source>
+        <translation>Exportar imagen...</translation>
+    </message>
+    <message>
+        <source>Export network diagram as PNG or SVG</source>
+        <translation>Exportar el diagrama de red como PNG o SVG</translation>
+    </message>
+    <message>
+        <source>Export network diagram</source>
+        <translation>Exportar diagrama de red</translation>
+    </message>
+    <message>
+        <source>PNG image (*.png);;SVG image (*.svg)</source>
+        <translation>Imagen PNG (*.png);;Imagen SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>There is nothing to export.</source>
+        <translation>No hay nada que exportar.</translation>
+    </message>
+    <message>
+        <source>NetEmul network diagram</source>
+        <translation>Diagrama de red de NetEmul</translation>
+    </message>
+    <message>
+        <source>Could not save the image file.</source>
+        <translation>No se pudo guardar el archivo de imagen.</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Configure VLAN...</source>
         <translation>Configurar VLAN...</translation>

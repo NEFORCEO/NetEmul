@@ -73,6 +73,7 @@ public slots:
     void aboutDialog();
     void printDialog();
     void printPreviewDialog();
+    void exportScene();
     void paintInPreviewDialog(QPrinter *printer);
     void incTime();
 private slots:
@@ -149,6 +150,7 @@ private:
     QAction *designerPacketAct;
     QAction *printAct;
     QAction *printPreviewAct;
+    QAction *exportSceneAct;
     QAction *virtualNetworkAct;
     QAction *noteAct;
     QAction *cableLabelAct;

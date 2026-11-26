@@ -54,7 +54,7 @@ jobs:
           host: mac
           target: desktop
           arch: clang_64
-          modules: qtscript
+          modules: qtscript qtsvg
           cache: true
       - name: Build and package macOS app
         working-directory: netemul-1.0
@@ -86,7 +86,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_mingw81
-          modules: qtscript
+          modules: qtscript qtsvg
           tools: 'tools_mingw,qt.tools.win64_mingw810'
           cache: true
       - name: Build and package Windows app

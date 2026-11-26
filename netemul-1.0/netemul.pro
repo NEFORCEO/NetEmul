@@ -37,7 +37,7 @@ INCLUDEPATH += . \
     src/commands \
     src/delegats \
     src/interfaces
-QT += script multimedia printsupport
+QT += script multimedia printsupport svg
 
 unix:!macx: QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
 

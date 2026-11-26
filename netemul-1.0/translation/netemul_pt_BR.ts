@@ -371,6 +371,34 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Export image...</source>
+        <translation>Exportar imagem...</translation>
+    </message>
+    <message>
+        <source>Export network diagram as PNG or SVG</source>
+        <translation>Exportar diagrama de rede como PNG ou SVG</translation>
+    </message>
+    <message>
+        <source>Export network diagram</source>
+        <translation>Exportar diagrama de rede</translation>
+    </message>
+    <message>
+        <source>PNG image (*.png);;SVG image (*.svg)</source>
+        <translation>Imagem PNG (*.png);;Imagem SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>There is nothing to export.</source>
+        <translation>Não há nada para exportar.</translation>
+    </message>
+    <message>
+        <source>NetEmul network diagram</source>
+        <translation>Diagrama de rede NetEmul</translation>
+    </message>
+    <message>
+        <source>Could not save the image file.</source>
+        <translation>Não foi possível salvar o arquivo de imagem.</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="177"/>
         <source>Configure VLAN...</source>
         <translation type="unfinished"></translation>

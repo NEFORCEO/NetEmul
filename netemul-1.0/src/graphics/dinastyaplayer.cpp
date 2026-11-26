@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
+#include <QCoreApplication>
 #include "mycanvas.h"
 #include "movecommand.h"
 
@@ -139,6 +140,11 @@ void DinastyaPlayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
         rightDragStarted = false;
         rightDragStartPos = pos();
         rightDragOffset = event->scenePos() - pos();
+        if (scene()) {
+            myCanvas *canvas = static_cast<myCanvas*>(scene());
+            canvas->turnToMove();
+            scene()->clearSelection();
+        }
         setSelected(true);
         event->accept();
         return;
@@ -170,7 +176,7 @@ void DinastyaPlayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             canvas->recordPlayerMove(this, rightDragStartPos, pos());
         } else if (!rightDragStarted) {
             QMenu menu;
-            QAction *deleteAction = menu.addAction(tr("Удалить плеер"));
+            QAction *deleteAction = menu.addAction(QCoreApplication::translate("MainWindow", "Delete"));
             if (menu.exec(event->screenPos()) == deleteAction && scene()) {
                 myCanvas *canvas = static_cast<myCanvas*>(scene());
                 canvas->deletePlayer(this);
