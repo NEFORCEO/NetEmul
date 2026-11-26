@@ -1,6 +1,7 @@
 #include "scenexmlwriter.h"
 #include "mycanvas.h"
 #include "device.h"
+#include "dinastyaplayer.h"
 
 sceneXmlWriter::sceneXmlWriter(myCanvas *scene) : myScene(scene)
 {
@@ -20,6 +21,12 @@ void sceneXmlWriter::writeScene(QIODevice *dev)
         writeAttribute("x" , QString::number( i->pos().x() ) );
         writeAttribute("y", QString::number( i->pos().y() ) );
         writeCharacters( i->toPlainText() );
+        writeEndElement();
+    }
+    foreach ( DinastyaPlayer *i, myScene->players() ) {
+        writeStartElement("dinastyaplayer");
+        writeAttribute("x", QString::number(i->pos().x()));
+        writeAttribute("y", QString::number(i->pos().y()));
         writeEndElement();
     }
     writeEndDocument();
