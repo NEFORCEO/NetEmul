@@ -60,7 +60,7 @@ myCanvas::myCanvas(QMenu *context, QObject *parent) : QGraphicsScene(parent)
 */ 
 myCanvas::~myCanvas()
 {
-    myState->goEmpty();
+    delete myState;
     clear();
     myDevices.clear();
     myConnections.clear();
@@ -176,6 +176,12 @@ void myCanvas::setMode(int modScene,int curDev)
 void myCanvas::hideState()
 {
     myState->hideState();
+}
+
+void myCanvas::finishPlayerInsertion()
+{
+    if (myState)
+        myState->goMove();
 }
 /*!
   Загружает сцену из файла.

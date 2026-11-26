@@ -103,6 +103,7 @@ public slots:
     void emulateTime();
     void editorLostFocus(textItem *t);
     void setMode(int modScene,int curDev);
+    void finishPlayerInsertion();
     void setShowGrid(bool b);
     void setShowLabels(bool b);
     void removeDevice();
