@@ -34,7 +34,7 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
 
     QLabel *cover = new QLabel(panel);
     cover->setFixedSize(72, 72);
-    QPixmap coverImage(":/im/cover-dinastia.jpg");
+    QPixmap coverImage(":/im/cover-dinastiya.jpg");
     if (!coverImage.isNull())
         cover->setPixmap(coverImage.scaled(72, 72, Qt::KeepAspectRatioByExpanding,
                                            Qt::SmoothTransformation));

@@ -275,7 +275,7 @@ void MainWindow::createAction()
     sendAct->setData( myCanvas::send* 10 + myCanvas::noDev);
     sendAct->setShortcut(tr("Ctrl+8"));
 
-    dinastyaAct = createOneAction(QIcon(":/im/cover-dinastia.jpg"), true);
+    dinastyaAct = createOneAction(QIcon(":/im/cover-dinastiya.jpg"), true);
     dinastyaAct->setData(myCanvas::insert * 10 + myCanvas::playerDev);
 
     testAct = createOneAction();
