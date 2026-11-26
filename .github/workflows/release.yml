@@ -55,7 +55,7 @@ jobs:
           target: desktop
           arch: clang_64
           modules: qtscript
-          archives: qtbase qtmultimedia qtsvg
+          archives: qtbase qtmultimedia qtsvg qttools
           cache: true
       - name: Build and package macOS app
         working-directory: netemul-1.0
@@ -106,7 +106,7 @@ jobs:
           if (!(Test-Path $windeployqt)) {
             throw "windeployqt is missing from the Qt installation: $windeployqt"
           }
-          & $windeployqt --release --compiler-runtime --multimedia --verbose 2 --dir release --plugindir release 'release/netemul.exe'
+          & $windeployqt --compiler-runtime --multimedia --verbose 2 --dir release --plugindir release 'release/netemul.exe'
           if ($LASTEXITCODE -ne 0) {
             throw "windeployqt failed with exit code $LASTEXITCODE."
           }
