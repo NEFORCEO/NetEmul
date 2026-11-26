@@ -1,9 +1,7 @@
 #include "dinastyaplayer.h"
 
-#include <phonon/AudioOutput>
-#include <phonon/MediaObject>
-#include <phonon/MediaSource>
-#include <phonon/Path>
+#include <QtMultimedia/QMediaContent>
+#include <QtMultimedia/QMediaPlayer>
 #include <QtCore/QFile>
 #include <QtCore/QTemporaryFile>
 #include <QtGui/QHBoxLayout>
@@ -13,8 +11,7 @@
 #include <QtGui/QVBoxLayout>
 
 DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
-    : QGraphicsProxyWidget(parent), mediaObject(new Phonon::MediaObject(this)),
-      audioOutput(new Phonon::AudioOutput(Phonon::MusicCategory, this)),
+    : QGraphicsProxyWidget(parent), mediaObject(new QMediaPlayer(this)),
       audioFile(new QTemporaryFile(this)), duration(0)
 {
     QWidget *panel = new QWidget;
@@ -65,9 +62,9 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     positionSlider = new QSlider(Qt::Horizontal, panel);
     positionSlider->setRange(0, 0);
     connect(positionSlider, SIGNAL(sliderMoved(int)), this, SLOT(seek(int)));
-    connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(updatePosition(qint64)));
-    connect(mediaObject, SIGNAL(totalTimeChanged(qint64)), this, SLOT(updateDuration(qint64)));
-    connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+    connect(mediaObject, SIGNAL(positionChanged(qint64)), this, SLOT(updatePosition(qint64)));
+    connect(mediaObject, SIGNAL(durationChanged(qint64)), this, SLOT(updateDuration(qint64)));
+    connect(mediaObject, SIGNAL(stateChanged(QMediaPlayer::State)),
             this, SLOT(updatePlaybackState()));
 
     QHBoxLayout *progressLayout = new QHBoxLayout;
@@ -87,7 +84,7 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     volumeSlider->setRange(0, 100);
     volumeSlider->setValue(80);
     volumeSlider->setFixedWidth(90);
-    audioOutput->setVolume(0.8);
+    mediaObject->setVolume(80);
     connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(setVolume(int)));
     connect(muteButton, SIGNAL(clicked()), this, SLOT(toggleMute()));
     QHBoxLayout *volumeLayout = new QHBoxLayout;
@@ -109,8 +106,7 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
         audioFile->write(resource.readAll());
         audioFile->flush();
         audioFile->close();
-        Phonon::createPath(mediaObject, audioOutput);
-        mediaObject->setCurrentSource(Phonon::MediaSource(audioFile->fileName()));
+        mediaObject->setMedia(QMediaContent(QUrl::fromLocalFile(audioFile->fileName())));
     } else {
         playButton->setEnabled(false);
         playButton->setToolTip(tr("Audio file is unavailable"));
@@ -119,24 +115,24 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
 
 void DinastyaPlayer::stopPlayback()
 {
-    if (mediaObject->state() != Phonon::StoppedState)
+    if (mediaObject->state() != QMediaPlayer::StoppedState)
         mediaObject->stop();
 }
 
 void DinastyaPlayer::togglePlayback()
 {
-    if (mediaObject->state() == Phonon::PlayingState) {
+    if (mediaObject->state() == QMediaPlayer::PlayingState) {
         mediaObject->pause();
         return;
     }
-    if (mediaObject->state() == Phonon::StoppedState && duration > 0)
+    if (mediaObject->state() == QMediaPlayer::StoppedState && duration > 0)
         mediaObject->seek(0);
     mediaObject->play();
 }
 
 void DinastyaPlayer::seek(int position)
 {
-    mediaObject->seek(position);
+    mediaObject->setPosition(position);
 }
 
 void DinastyaPlayer::updatePosition(qint64 position)
@@ -156,22 +152,22 @@ void DinastyaPlayer::updateDuration(qint64 milliseconds)
 
 void DinastyaPlayer::updatePlaybackState()
 {
-    const bool playing = mediaObject->state() == Phonon::PlayingState;
+    const bool playing = mediaObject->state() == QMediaPlayer::PlayingState;
     playButton->setText(playing ? QString::fromUtf8("Ⅱ") : QString::fromUtf8("▶"));
     playButton->setToolTip(playing ? tr("Pause") : tr("Play"));
 }
 
 void DinastyaPlayer::toggleMute()
 {
-    const bool muted = audioOutput->isMuted();
-    audioOutput->setMuted(!muted);
+    const bool muted = mediaObject->isMuted();
+    mediaObject->setMuted(!muted);
     muteButton->setText(muted ? QString::fromUtf8("♫") : QString::fromUtf8("×"));
     muteButton->setToolTip(muted ? tr("Mute") : tr("Unmute"));
 }
 
 void DinastyaPlayer::setVolume(int volume)
 {
-    audioOutput->setVolume(volume / 100.0);
+    mediaObject->setVolume(volume);
 }
 
 QString DinastyaPlayer::formatTime(qint64 milliseconds) const

@@ -3,10 +3,7 @@
 
 #include <QtGui/QGraphicsProxyWidget>
 
-namespace Phonon {
-class MediaObject;
-class AudioOutput;
-}
+class QMediaPlayer;
 
 class QLabel;
 class QPushButton;
@@ -34,8 +31,7 @@ private slots:
 private:
     QString formatTime(qint64 milliseconds) const;
 
-    Phonon::MediaObject *mediaObject;
-    Phonon::AudioOutput *audioOutput;
+    QMediaPlayer *mediaObject;
     QTemporaryFile *audioFile;
     QPushButton *playButton;
     QPushButton *muteButton;
