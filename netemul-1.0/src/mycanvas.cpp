@@ -38,6 +38,7 @@
 #include "addcablecommand.h"
 #include "scenexmlwriter.h"
 #include "scenexmlreader.h"
+#include "dinastyaplayer.h"
 
 /*!
   Конструктор проводит начальную инициализацию сцены.
@@ -63,6 +64,7 @@ myCanvas::~myCanvas()
     myDevices.clear();
     myConnections.clear();
     myTextItems.clear();
+    myPlayers.clear();
 }
 //------------------------------------------------------------------
 /*!
@@ -157,6 +159,7 @@ void myCanvas::closeFile()
     setSceneRect(0,0,1,1);
     myConnections.clear();
     myTextItems.clear();
+    myPlayers.clear();
     if ( myTimer ) stop();
     myOpen = false;
     myModified = false;
@@ -223,6 +226,13 @@ void myCanvas::openScene(QString fileName)
         s >> p; s >> str;
         createTextItem(p,str);
     }
+    if ( !s.atEnd() ) {
+        s >> n;
+        for ( i = 0 ; i < n ; i++ ) {
+            s >> p;
+            createDinastyaPlayer(p);
+        }
+    }
     if ( s.status() != QDataStream::Ok ) qDebug() << "PPC";
     file.close();
     QApplication::restoreOverrideCursor();
@@ -278,6 +288,9 @@ void myCanvas::saveScene(QString fileName)
         s << i->pos();
         s << i->toPlainText();
     }
+    s << myPlayers.count();
+    foreach ( DinastyaPlayer *i, myPlayers )
+        s << i->pos();
     if ( s.status() != QDataStream::Ok ) qDebug() << "PPC";
     file.close();
     QApplication::restoreOverrideCursor();
@@ -413,6 +426,27 @@ textItem* myCanvas::createTextItem(QPointF p , const QString &str /*=tr("Ком�
     addItem(t);
     myTextItems << t;
     return t;
+}
+
+DinastyaPlayer* myCanvas::createDinastyaPlayer(QPointF point)
+{
+    DinastyaPlayer *player = new DinastyaPlayer;
+    player->setPos(point);
+    addItem(player);
+    myPlayers << player;
+    return player;
+}
+
+void myCanvas::registerPlayer(DinastyaPlayer *player)
+{
+    addItem(player);
+    myPlayers << player;
+}
+
+void myCanvas::unregisterPlayer(DinastyaPlayer *player)
+{
+    removeItem(player);
+    myPlayers.removeOne(player);
 }
 //--------------------------------------------------------------------
 /*!

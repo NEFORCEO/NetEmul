@@ -166,6 +166,7 @@ void MainWindow::retranslate()
     UPDATEACTION( switchAct , tr("Switch"),tr("Add switch") )
     UPDATEACTION( routerAct , tr("Router") , tr("Add router") )
     UPDATEACTION( sendAct , tr("Send"),tr("Send data") )
+    UPDATEACTION( dinastyaAct , tr("Династия"),tr("Add Dinastya music player") )
     UPDATEACTION( testAct , tr("Execute scripts") , tr("Run existing scripts")  )
     UPDATEACTION( aboutQtAct , tr("About Qt") , tr("About Qt") )
     UPDATEACTION( propertyAct , tr("Properties") , tr("Show properties")  )
@@ -270,6 +271,9 @@ void MainWindow::createAction()
     sendAct = createOneAction(QIcon(":/im/images/left_right.png"),true);
     sendAct->setData( myCanvas::send* 10 + myCanvas::noDev);
     sendAct->setShortcut(tr("Ctrl+8"));
+
+    dinastyaAct = createOneAction(QIcon(":/im/cover-dinastia.jpg"), true);
+    dinastyaAct->setData(myCanvas::insert * 10 + myCanvas::playerDev);
 
     testAct = createOneAction();
     connect( testAct , SIGNAL(triggered()) , SLOT(test()));
@@ -392,6 +396,7 @@ void MainWindow::createTools()
     deviceBar->addAction( switchAct);
     deviceBar->addAction( routerAct);
     deviceBar->addAction( sendAct);
+    deviceBar->addAction(dinastyaAct);
     deviceBar->addSeparator();
     deviceBar->addAction( playAct);
     //deviceBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);

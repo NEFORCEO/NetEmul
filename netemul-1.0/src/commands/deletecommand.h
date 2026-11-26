@@ -28,6 +28,7 @@ class myCanvas;
 class cableDev;
 class device;
 class textItem;
+class DinastyaPlayer;
 
 class deleteCommand : public QUndoCommand
 {
@@ -43,6 +44,7 @@ private:
     QSet<cableDev*> extractCables;
     QList<device*> extractDevices;
     QList<textItem*> extractText;
+    QList<DinastyaPlayer*> extractPlayers;
     bool isOnScene;
 };
 

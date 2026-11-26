@@ -135,6 +135,7 @@ private:
     QAction *hubAct;
     QAction *shareBusAct;
     QAction *sendAct;
+    QAction *dinastyaAct;
     QAction *propertyAct;
     QAction *aboutQtAct;
     QAction *aboutAct;

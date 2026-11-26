@@ -36,5 +36,7 @@
         <file>images/print.png</file>
         <file>images/print_preview.png</file>
         <file>images/description.png</file>
+        <file>cover-dinastiya.jpg</file>
+        <file>audio-dinastiya.mp3</file>
     </qresource>
 </RCC>

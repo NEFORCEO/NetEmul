@@ -1,0 +1,176 @@
+#include "dinastyaplayer.h"
+
+#include <phonon/AudioOutput>
+#include <phonon/MediaObject>
+#include <phonon/MediaSource>
+#include <phonon/Path>
+#include <QtCore/QFile>
+#include <QtCore/QTemporaryFile>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QSlider>
+#include <QtGui/QVBoxLayout>
+
+DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
+    : QGraphicsProxyWidget(parent), mediaObject(new Phonon::MediaObject(this)),
+      audioOutput(new Phonon::AudioOutput(Phonon::MusicCategory, this)),
+      audioFile(new QTemporaryFile(this)), duration(0)
+{
+    QWidget *panel = new QWidget;
+    panel->setFixedSize(700, 100);
+    panel->setStyleSheet("QWidget#dinastyaPanel { background-color: #602719; }"
+                         "QLabel { color: #f6eee9; background: transparent; }"
+                         "QPushButton { color: #f6eee9; background: transparent; border: 0; }"
+                         "QPushButton#playButton { background-color: #ffd23f; color: #602719;"
+                         " border-radius: 22px; font-size: 18px; font-weight: bold; }"
+                         "QSlider::groove:horizontal { height: 6px; background: #b88c7d;"
+                         " border-radius: 3px; }"
+                         "QSlider::sub-page:horizontal { background: #f6eee9; border-radius: 3px; }"
+                         "QSlider::handle:horizontal { width: 14px; margin: -5px 0;"
+                         " background: #ffffff; border-radius: 7px; }");
+    panel->setObjectName("dinastyaPanel");
+    setWidget(panel);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setZValue(100);
+
+    QLabel *cover = new QLabel(panel);
+    cover->setFixedSize(72, 72);
+    QPixmap coverImage(":/im/cover-dinastia.jpg");
+    if (!coverImage.isNull())
+        cover->setPixmap(coverImage.scaled(72, 72, Qt::KeepAspectRatioByExpanding,
+                                           Qt::SmoothTransformation));
+
+    QLabel *title = new QLabel(tr("ДИНАСТИЯ"), panel);
+    QFont titleFont = title->font();
+    titleFont.setPointSize(16);
+    titleFont.setBold(true);
+    title->setFont(titleFont);
+    QLabel *artist = new QLabel(tr("VILLIAN, madk1d"), panel);
+    artist->setStyleSheet("color: #c9a99e;");
+    QVBoxLayout *trackLayout = new QVBoxLayout;
+    trackLayout->setSpacing(5);
+    trackLayout->addWidget(title);
+    trackLayout->addWidget(artist);
+
+    playButton = new QPushButton(QString::fromUtf8("▶"), panel);
+    playButton->setObjectName("playButton");
+    playButton->setFixedSize(44, 44);
+    playButton->setToolTip(tr("Play"));
+    connect(playButton, SIGNAL(clicked()), this, SLOT(togglePlayback()));
+
+    positionLabel = new QLabel("0:00", panel);
+    durationLabel = new QLabel("0:00", panel);
+    positionSlider = new QSlider(Qt::Horizontal, panel);
+    positionSlider->setRange(0, 0);
+    connect(positionSlider, SIGNAL(sliderMoved(int)), this, SLOT(seek(int)));
+    connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(updatePosition(qint64)));
+    connect(mediaObject, SIGNAL(totalTimeChanged(qint64)), this, SLOT(updateDuration(qint64)));
+    connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+            this, SLOT(updatePlaybackState()));
+
+    QHBoxLayout *progressLayout = new QHBoxLayout;
+    progressLayout->setSpacing(10);
+    progressLayout->addWidget(positionLabel);
+    progressLayout->addWidget(positionSlider, 1);
+    progressLayout->addWidget(durationLabel);
+    QVBoxLayout *playbackLayout = new QVBoxLayout;
+    playbackLayout->setSpacing(5);
+    playbackLayout->addWidget(playButton, 0, Qt::AlignHCenter);
+    playbackLayout->addLayout(progressLayout);
+
+    muteButton = new QPushButton(QString::fromUtf8("♫"), panel);
+    muteButton->setFixedWidth(28);
+    muteButton->setToolTip(tr("Mute"));
+    volumeSlider = new QSlider(Qt::Horizontal, panel);
+    volumeSlider->setRange(0, 100);
+    volumeSlider->setValue(80);
+    volumeSlider->setFixedWidth(90);
+    audioOutput->setVolume(0.8);
+    connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(setVolume(int)));
+    connect(muteButton, SIGNAL(clicked()), this, SLOT(toggleMute()));
+    QHBoxLayout *volumeLayout = new QHBoxLayout;
+    volumeLayout->setSpacing(6);
+    volumeLayout->addWidget(muteButton);
+    volumeLayout->addWidget(volumeSlider);
+
+    QHBoxLayout *layout = new QHBoxLayout(panel);
+    layout->setContentsMargins(14, 10, 14, 10);
+    layout->setSpacing(18);
+    layout->addWidget(cover);
+    layout->addLayout(trackLayout, 0);
+    layout->addStretch(1);
+    layout->addLayout(playbackLayout, 4);
+    layout->addLayout(volumeLayout, 0);
+
+    QFile resource(":/im/audio-dinastiya.mp3");
+    if (resource.open(QIODevice::ReadOnly) && audioFile->open()) {
+        audioFile->write(resource.readAll());
+        audioFile->flush();
+        audioFile->close();
+        Phonon::createPath(mediaObject, audioOutput);
+        mediaObject->setCurrentSource(Phonon::MediaSource(audioFile->fileName()));
+    } else {
+        playButton->setEnabled(false);
+        playButton->setToolTip(tr("Audio file is unavailable"));
+    }
+}
+
+void DinastyaPlayer::togglePlayback()
+{
+    if (mediaObject->state() == Phonon::PlayingState) {
+        mediaObject->pause();
+        return;
+    }
+    if (mediaObject->state() == Phonon::StoppedState && duration > 0)
+        mediaObject->seek(0);
+    mediaObject->play();
+}
+
+void DinastyaPlayer::seek(int position)
+{
+    mediaObject->seek(position);
+}
+
+void DinastyaPlayer::updatePosition(qint64 position)
+{
+    positionSlider->blockSignals(true);
+    positionSlider->setValue(static_cast<int>(position));
+    positionSlider->blockSignals(false);
+    positionLabel->setText(formatTime(position));
+}
+
+void DinastyaPlayer::updateDuration(qint64 milliseconds)
+{
+    duration = milliseconds;
+    positionSlider->setRange(0, static_cast<int>(milliseconds));
+    durationLabel->setText(formatTime(milliseconds));
+}
+
+void DinastyaPlayer::updatePlaybackState()
+{
+    const bool playing = mediaObject->state() == Phonon::PlayingState;
+    playButton->setText(playing ? QString::fromUtf8("Ⅱ") : QString::fromUtf8("▶"));
+    playButton->setToolTip(playing ? tr("Pause") : tr("Play"));
+}
+
+void DinastyaPlayer::toggleMute()
+{
+    const bool muted = audioOutput->isMuted();
+    audioOutput->setMuted(!muted);
+    muteButton->setText(muted ? QString::fromUtf8("♫") : QString::fromUtf8("×"));
+    muteButton->setToolTip(muted ? tr("Mute") : tr("Unmute"));
+}
+
+void DinastyaPlayer::setVolume(int volume)
+{
+    audioOutput->setVolume(volume / 100.0);
+}
+
+QString DinastyaPlayer::formatTime(qint64 milliseconds) const
+{
+    const int seconds = static_cast<int>(milliseconds / 1000);
+    return QString::number(seconds / 60) + ":" +
+            (seconds % 60 < 10 ? "0" : "") + QString::number(seconds % 60);
+}

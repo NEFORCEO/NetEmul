@@ -32,6 +32,7 @@ class devicePort;
 class device;
 class deviceImpl;
 class abstractState;
+class DinastyaPlayer;
 
 typedef QList<device*> deviceList;
 typedef QList<textItem*> textItemList;
@@ -53,6 +54,7 @@ class myCanvas : public QGraphicsScene
 public:
     // режимы : нет файла , перемещение , вставка провода , вставка устройства
     enum { noFile = -1 , move = 0 , cable = 1 , insert = 2 , send = 6 , text = 8};
+    enum { playerDev = 9 };
     enum { width = 2000 , height = 2000 };    
     // типы устройств : Нет устройства , компьютер , концентратор , коммутатор
     enum { noDev = 0 , busDev = 2 ,compDev = 3 , hubDev = 4 , switchDev = 5 , routerDev = 7 };
@@ -85,6 +87,10 @@ public:
     void unregisterCable(cableDev *cable);
     void registerText(textItem *t);
     void unregisterText(textItem *t);
+    void registerPlayer(DinastyaPlayer *player);
+    void unregisterPlayer(DinastyaPlayer *player);
+    DinastyaPlayer* createDinastyaPlayer(QPointF point);
+    QList<DinastyaPlayer*> players() const { return myPlayers; }
     void putItems(QMap<QGraphicsItem*,QPointF> map);
     void calibrateAll(QList<QGraphicsItem*> list);
     bool isDevice(QGraphicsItem *t) const;
@@ -138,6 +144,7 @@ public:
     textItemList textItems() const { return myTextItems; }
 private:
     textItemList myTextItems; //!< Список всех надписей на сцене.
+    QList<DinastyaPlayer*> myPlayers;
 
 public:
     cableList connections() const { return myConnections; }

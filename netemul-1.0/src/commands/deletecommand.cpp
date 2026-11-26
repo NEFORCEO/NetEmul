@@ -22,6 +22,7 @@
 #include "cabledev.h"
 #include "device.h"
 #include "textitem.h"
+#include "dinastyaplayer.h"
 
 deleteCommand::deleteCommand(myCanvas *s, QList<QGraphicsItem*> list)
 {
@@ -34,6 +35,8 @@ deleteCommand::deleteCommand(myCanvas *s, QList<QGraphicsItem*> list)
         }
         else if ( i->type() == cableDev::Type ) extractCables << qgraphicsitem_cast<cableDev*>(i);
         else if (i->type() == textItem::Type )  extractText << qgraphicsitem_cast<textItem*>(i);
+        else if (i->type() == DinastyaPlayer::Type )
+            extractPlayers << static_cast<DinastyaPlayer*>(i);
     }
     setText(QObject::tr("Delete"));
 }
@@ -44,6 +47,7 @@ deleteCommand::~deleteCommand()
     qDeleteAll(extractDevices);
     qDeleteAll(extractCables);
     qDeleteAll(extractText);
+    qDeleteAll(extractPlayers);
 }
 
 void deleteCommand::undo()
@@ -51,6 +55,7 @@ void deleteCommand::undo()
     foreach ( device *i, extractDevices ) scene->registerDevice(i);
     foreach ( cableDev *i, extractCables ) createConnection(i);
     foreach ( textItem *i , extractText ) scene->registerText(i);
+    foreach ( DinastyaPlayer *i , extractPlayers ) scene->registerPlayer(i);
     isOnScene = true;
 }
 
@@ -59,6 +64,7 @@ void deleteCommand::redo()
     foreach ( device *i, extractDevices ) scene->unregisterDevice(i);
     foreach ( cableDev *i, extractCables ) deleteConnection(i);
     foreach ( textItem *i, extractText ) scene->unregisterText(i);
+    foreach ( DinastyaPlayer *i, extractPlayers ) scene->unregisterPlayer(i);
     isOnScene = false;
 }
 
