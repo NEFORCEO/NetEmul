@@ -53,6 +53,7 @@ void insertState::mousePress(QGraphicsSceneMouseEvent *event)
                     scene, event->scenePos() - QPointF(350, 50));
         scene->commandStack.push(command);
         scene->myModified = true;
+        scene->turnToMove();
         return;
     }
     if ( !InsertRect->isReadyInsert() ) return;
