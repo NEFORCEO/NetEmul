@@ -258,6 +258,15 @@
 			<key>requirement</key>
 			<string>cdhash H"62943ecb4a46b7c3d4636b7d5a3e170b4952da67"</string>
 		</dict>
+		<key>Frameworks/libsharpyuv.0.dylib</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			BBP4sKeqvVUzhcUx1hu5IWFyZYs=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"0413f8b0a7aabd553385c531d61bb9216172658b"</string>
+		</dict>
 		<key>Frameworks/libtiff.6.dylib</key>
 		<dict>
 			<key>cdhash</key>
