@@ -126,7 +126,7 @@ void DinastyaPlayer::togglePlayback()
         return;
     }
     if (mediaObject->state() == QMediaPlayer::StoppedState && duration > 0)
-        mediaObject->seek(0);
+        mediaObject->setPosition(0);
     mediaObject->play();
 }
 

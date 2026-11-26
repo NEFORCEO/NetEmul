@@ -24,8 +24,9 @@
   Передает параметры предку и делает надпись перемещаемой и выделяемой.
 */
 textItem::textItem(QPointF p, QGraphicsItem *parent /* = 0 */ , QGraphicsScene *scene /* = 0 */)
-        : QGraphicsTextItem(parent,scene)
+        : QGraphicsTextItem(parent)
 {
+    Q_UNUSED(scene);
      setPos(p);
      setTextInteractionFlags(Qt::TextEditorInteraction);
      setZValue(1000.0);

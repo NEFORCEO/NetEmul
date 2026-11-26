@@ -3,8 +3,9 @@
 #include <QPainter>
 
 
-cableTextItem::cableTextItem(QGraphicsItem *parent /*= 0*/ , QGraphicsScene *scene /*= 0*/) : QGraphicsTextItem(parent,scene)
+cableTextItem::cableTextItem(QGraphicsItem *parent /*= 0*/ , QGraphicsScene *scene /*= 0*/) : QGraphicsTextItem(parent)
 {
+    Q_UNUSED(scene);
     setZValue(1005);
     setFont(QFont("Times", 8));
 }
