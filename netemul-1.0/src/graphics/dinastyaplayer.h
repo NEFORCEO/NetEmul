@@ -17,7 +17,7 @@ class DinastyaPlayer : public QGraphicsProxyWidget
 {
     Q_OBJECT
 public:
-    enum { Type = QGraphicsItem::UserType + 4 };
+    enum { Type = QGraphicsItem::UserType + 6 };
     explicit DinastyaPlayer(QGraphicsItem *parent = 0);
     int type() const { return Type; }
 
