@@ -35,7 +35,7 @@ INCLUDEPATH += . \
     src/commands \
     src/delegats \
     src/interfaces
-QT += script phonon
+QT += script multimedia
 
 QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
 
