@@ -1,0 +1,138 @@
+name: Build and release NetEmul
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: netemul-release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      should_release: ${{ steps.read.outputs.should_release }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: read
+        shell: bash
+        run: |
+          version="$(tr -d '[:space:]' < version.txt)"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "version.txt must contain a version like 0.9.7 (without a v prefix)" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git tag --list "v$version" | grep -q .; then
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "Release v$version already exists; skipping both builds."
+          else
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "New release v$version will be built."
+          fi
+
+  build-macos:
+    needs: version
+    if: needs.version.outputs.should_release == 'true'
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: mac
+          target: desktop
+          arch: clang_64
+          modules: qtmultimedia qtscript
+          cache: true
+      - name: Build and package macOS app
+        working-directory: netemul-1.0
+        run: |
+          qmake netemul.pro CONFIG+=release
+          make -j"$(sysctl -n hw.ncpu)"
+          macdeployqt netemul.app -dmg
+          test -f netemul.dmg
+          mv netemul.dmg "../NetEmul-${{ needs.version.outputs.version }}-macOS.dmg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: NetEmul-${{ needs.version.outputs.version }}-macOS.dmg
+          if-no-files-found: error
+
+  build-windows:
+    needs: version
+    if: needs.version.outputs.should_release == 'true'
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: windows
+          target: desktop
+          arch: win64_mingw81
+          modules: qtmultimedia qtscript
+          tools: 'tools_mingw,qt.tools.win64_mingw810'
+          cache: true
+      - name: Build and package Windows app
+        shell: pwsh
+        working-directory: netemul-1.0
+        run: |
+          $ErrorActionPreference = 'Stop'
+          qmake netemul.pro 'CONFIG+=release'
+          mingw32-make -j $env:NUMBER_OF_PROCESSORS
+          if (!(Test-Path 'release/netemul.exe')) {
+            throw 'Expected release/netemul.exe was not produced.'
+          }
+          windeployqt --release --compiler-runtime --multimedia release/netemul.exe
+          Copy-Item -Recurse translation release/translation
+          Copy-Item -Recurse scripts release/scripts
+          Copy-Item -Recurse doc release/doc
+          iscc.exe /Q "/DAppVersion=${{ needs.version.outputs.version }}" windows\netemul.iss
+          if (!(Test-Path 'windows/NetEmul-Setup.exe')) {
+            throw 'Expected windows/NetEmul-Setup.exe installer was not produced.'
+          }
+          Move-Item windows/NetEmul-Setup.exe "../NetEmul-${{ needs.version.outputs.version }}-Windows.exe"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: NetEmul-${{ needs.version.outputs.version }}-Windows.exe
+          if-no-files-found: error
+
+  release:
+    needs: [version, build-macos, build-windows]
+    if: needs.version.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Create tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "v$VERSION" -m "NetEmul $VERSION"
+          git push origin "v$VERSION"
+          gh release create "v$VERSION" release-assets/* \
+            --title "NetEmul $VERSION" \
+            --generate-notes

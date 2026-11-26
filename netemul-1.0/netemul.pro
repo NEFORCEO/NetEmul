@@ -15,6 +15,8 @@ include(src/delegats/delegats.pri)
 include(src/interfaces/interfaces.pri)
 TEMPLATE = app
 TARGET = netemul
+VERSION = $$cat(../version.txt)
+DEFINES += NETEMUL_VERSION=\\\"$$VERSION\\\"
 DEPENDPATH += . \
     src \
     ui \
@@ -37,17 +39,15 @@ INCLUDEPATH += . \
     src/interfaces
 QT += script multimedia printsupport
 
-!macx: QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
+unix:!macx: QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
 
 # Default translations path
 TRANSLATIONS_PATH = "translation"
 DOC_PATH = "doc"
 SCRIPT_PATH = "scripts"
-win32 { 
-    DESTDIR = ../trunk
-    message("Static link ...")
+win32 {
+    DESTDIR = release
     DEFINES += QT_NO_DEBUG_OUTPUT
-    CONFIG += static
 }
 macx:message("You have MACX...")
 CONFIG += warn_on
@@ -89,7 +89,7 @@ RESOURCES += netemul.qrc
 TRANSLATIONS += translation/netemul_ru.ts \
     translation/netemul_pt_BR.ts \
     translation/netemul_es.ts
-unix { 
+unix:!macx {
     CONFIG += debug
     
     # Prefix: base instalation directory

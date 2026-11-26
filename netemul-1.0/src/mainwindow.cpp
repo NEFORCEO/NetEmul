@@ -61,7 +61,7 @@
 // Конструктор главной формы
 MainWindow::MainWindow(QWidget *parent, QStringList param) : QMainWindow(parent)
 {
-    QCoreApplication::setApplicationVersion("0.9.6");
+    QCoreApplication::setApplicationVersion(QString::fromLatin1(NETEMUL_VERSION));
     createAction(); // Создаем события
     createTools(); //
     createMenu(); // Создаем меню
