@@ -9,8 +9,8 @@
 #ifndef UI_ABOUTWINDOW_H
 #define UI_ABOUTWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QVariant>
+#include <QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHBoxLayout>

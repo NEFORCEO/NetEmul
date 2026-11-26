@@ -9,7 +9,7 @@
 #ifndef UI_VIRTUALNETWORKDIALOG_H
 #define UI_VIRTUALNETWORKDIALOG_H
 
-#include <QtCore/QVariant>
+#include <QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 

@@ -9,8 +9,8 @@
 #ifndef UI_TABLESWITCH_H
 #define UI_TABLESWITCH_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QVariant>
+#include <QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>

@@ -9,8 +9,8 @@
 #ifndef UI_DHCPSERVERPROPERTY_H
 #define UI_DHCPSERVERPROPERTY_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QVariant>
+#include <QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>

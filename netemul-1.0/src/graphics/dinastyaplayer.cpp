@@ -2,13 +2,13 @@
 
 #include <QtMultimedia/QMediaContent>
 #include <QtMultimedia/QMediaPlayer>
-#include <QtCore/QFile>
-#include <QtCore/QTemporaryFile>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QSlider>
-#include <QtGui/QVBoxLayout>
+#include <QFile>
+#include <QTemporaryFile>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QSlider>
+#include <QVBoxLayout>
 
 DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     : QGraphicsProxyWidget(parent), mediaObject(new QMediaPlayer(this)),

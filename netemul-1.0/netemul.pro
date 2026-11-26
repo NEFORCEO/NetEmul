@@ -70,8 +70,10 @@ HEADERS += src/deviceport.h \
     src/ipedit.h \
     src/macaddress.h \
     src/mainwindow.h \
-    src/mycanvas.h
+    src/mycanvas.h \
+    src/qtcompat.h
 SOURCES += src/deviceport.cpp \
+    src/qtcompat.h \
     src/frame.cpp \
     src/ipaddress.cpp \
     src/ipedit.cpp \
@@ -79,6 +81,11 @@ SOURCES += src/deviceport.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/mycanvas.cpp
+
+macx {
+    QMAKE_INFO_PLIST = mac/Info.plist
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+}
 RESOURCES += netemul.qrc
 TRANSLATIONS += translation/netemul_ru.ts \
     translation/netemul_pt_BR.ts \

@@ -1,7 +1,7 @@
 #ifndef DINASTYAPLAYER_H
 #define DINASTYAPLAYER_H
 
-#include <QtGui/QGraphicsProxyWidget>
+#include <QGraphicsProxyWidget>
 
 class QMediaPlayer;
 

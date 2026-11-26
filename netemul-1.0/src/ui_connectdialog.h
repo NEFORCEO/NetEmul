@@ -9,8 +9,8 @@
 #ifndef UI_CONNECTDIALOG_H
 #define UI_CONNECTDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QVariant>
+#include <QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHBoxLayout>

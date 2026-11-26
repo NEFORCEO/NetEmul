@@ -9,7 +9,7 @@
 #ifndef UI_TESTDIALOG_H
 #define UI_TESTDIALOG_H
 
-#include <QtCore/QVariant>
+#include <QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>

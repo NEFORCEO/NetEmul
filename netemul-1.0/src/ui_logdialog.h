@@ -9,8 +9,8 @@
 #ifndef UI_LOGDIALOG_H
 #define UI_LOGDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QVariant>
+#include <QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
