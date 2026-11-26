@@ -43,16 +43,18 @@ jobs:
   build-macos:
     needs: version
     if: needs.version.outputs.should_release == 'true'
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      - name: Verify Apple Silicon runner
+        run: test "$(uname -m)" = arm64
       - uses: jurplel/install-qt-action@v4
         with:
           version: '5.15.2'
           host: mac
           target: desktop
           arch: clang_64
-          modules: qtmultimedia qtscript
+          modules: qtscript
           cache: true
       - name: Build and package macOS app
         working-directory: netemul-1.0
@@ -83,7 +85,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_mingw81
-          modules: qtmultimedia qtscript
+          modules: qtscript
           tools: 'tools_mingw,qt.tools.win64_mingw810'
           cache: true
       - name: Build and package Windows app
