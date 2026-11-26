@@ -14,7 +14,7 @@ void sceneXmlWriter::writeScene(QIODevice *dev)
     writeStartDocument();
     writeStartElement("netemul");
     writeAttribute("version",QCoreApplication::applicationVersion() );
-    foreach ( device::device *i , myScene->devices() )
+    foreach ( ::device *i , myScene->devices() )
         i->writeXml(*this);
     foreach ( textItem *i , myScene->textItems() ) {
         writeStartElement("textitem");
