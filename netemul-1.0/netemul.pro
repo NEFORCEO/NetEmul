@@ -35,7 +35,7 @@ INCLUDEPATH += . \
     src/commands \
     src/delegats \
     src/interfaces
-QT += script multimedia
+QT += script multimedia printsupport
 
 !macx: QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
 
@@ -73,7 +73,6 @@ HEADERS += src/deviceport.h \
     src/mycanvas.h \
     src/qtcompat.h
 SOURCES += src/deviceport.cpp \
-    src/qtcompat.h \
     src/frame.cpp \
     src/ipaddress.cpp \
     src/ipedit.cpp \

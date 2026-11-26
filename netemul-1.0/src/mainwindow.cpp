@@ -33,6 +33,9 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QDesktopServices>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include "mainwindow.h"
 #include "scenecontrol.h"
 #include "settingdialog.h"
