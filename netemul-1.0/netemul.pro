@@ -37,7 +37,7 @@ INCLUDEPATH += . \
     src/interfaces
 QT += script multimedia
 
-QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
+!macx: QMAKE_POST_LINK += cd ipedit && qmake && make && cd ..
 
 # Default translations path
 TRANSLATIONS_PATH = "translation"
