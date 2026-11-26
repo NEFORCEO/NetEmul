@@ -61,6 +61,8 @@ myCanvas::myCanvas(QMenu *context, QObject *parent) : QGraphicsScene(parent)
 myCanvas::~myCanvas()
 {
     delete myState;
+    foreach (DinastyaPlayer *player, myPlayers)
+        player->stopPlayback();
     clear();
     myDevices.clear();
     myConnections.clear();
@@ -154,6 +156,8 @@ void myCanvas::closeFile()
 {   
     myState->goEmpty();
     commandStack.clear();
+    foreach (DinastyaPlayer *player, myPlayers)
+        player->stopPlayback();
     clear();
     myDevices.clear();
     setBackgroundBrush(QBrush(Qt::lightGray));

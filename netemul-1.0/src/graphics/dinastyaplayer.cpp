@@ -117,6 +117,12 @@ DinastyaPlayer::DinastyaPlayer(QGraphicsItem *parent)
     }
 }
 
+void DinastyaPlayer::stopPlayback()
+{
+    if (mediaObject->state() != Phonon::StoppedState)
+        mediaObject->stop();
+}
+
 void DinastyaPlayer::togglePlayback()
 {
     if (mediaObject->state() == Phonon::PlayingState) {

@@ -20,6 +20,7 @@ public:
     enum { Type = QGraphicsItem::UserType + 6 };
     explicit DinastyaPlayer(QGraphicsItem *parent = 0);
     int type() const { return Type; }
+    void stopPlayback();
 
 private slots:
     void togglePlayback();
