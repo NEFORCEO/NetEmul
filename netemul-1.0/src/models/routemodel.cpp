@@ -115,8 +115,9 @@ routeRecord* routeModel::addToTable(ipAddress d,ipAddress m,ipAddress g,ipAddres
 routeRecord* routeModel::addToTable(routeRecord *r)
 {
     table << r;
-    qStableSort(table.begin(),table.end(),routeGreat);    
-    reset();
+    qStableSort(table.begin(),table.end(),routeGreat);
+    beginResetModel();
+    endResetModel();
     emit recordAdding(r,addNet);
     return r;    
 }
@@ -142,7 +143,8 @@ void routeModel::deleteFromTable(routeRecord *r)
     table.removeOne(r);
     delete r;
     qStableSort(table.begin(),table.end(),routeGreat);
-    reset();
+    beginResetModel();
+    endResetModel();
 }
 //--------------------------------------------------------------
 /*!
